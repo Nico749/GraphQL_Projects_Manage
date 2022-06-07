@@ -1,6 +1,9 @@
 const {projects, clients} = require ('../dummydata.js')
+const Project = require('../models/Project')
+const Client = require('../models/Client')
 
 const {GraphQLObjectType, GraphQLID, GraphQLString, GraphQLSchema, GraphQLList} = require ('graphql')
+
 
 //client type
 const ClientType = new GraphQLObjectType({
@@ -23,7 +26,7 @@ const ProjectType = new GraphQLObjectType({
         status:{type:GraphQLString},
         // (LINKING THE TWO SCHEMAS) gives back the client whose id matches the one of the parent(project)
         client:{type:ClientType,
-        resolve(parent,args){return clients.find(client =>client.id === parent.id)}}
+        resolve(parent,args){return Client.findById(parent.clientId)}}
     })
 })
 
@@ -36,13 +39,14 @@ const RootQuery = new GraphQLObjectType({
             // we pass the id as args to pick a client
             args:{id:{type:GraphQLID}},
             resolve(parent, args){
-                return clients.find(client =>client.id === args.id)
+                return Client.findById(args.id)
             }
         },
         clients:{
             type: new GraphQLList(ClientType),
             resolve(parent,args){
-                return clients //return the full arrays of clients
+                //return clients //return the full arrays of clients
+                return Client.find()
             }
         },
         project:{
@@ -50,13 +54,14 @@ const RootQuery = new GraphQLObjectType({
             // we pass the id as args to pick a client
             args:{id:{type:GraphQLID}},
             resolve(parent, args){
-                return projects.find(project =>project.id === args.id)
+                //if we use dummy data ==>return projects.find(project =>project.id === args.id)
+                return Project.findById(args.id)
             }
         },
         projects:{
             type: new GraphQLList(ProjectType),
             resolve(parent,args){
-                return projects
+                return Project.find()
             }
         }
     }
