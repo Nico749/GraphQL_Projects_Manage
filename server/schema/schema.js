@@ -21,6 +21,9 @@ const ProjectType = new GraphQLObjectType({
         name:{type:GraphQLString},
         description:{type:GraphQLString},
         status:{type:GraphQLString},
+        // (LINKING THE TWO SCHEMAS) gives back the client whose id matches the one of the parent(project)
+        client:{type:ClientType,
+        resolve(parent,args){return clients.find(client =>client.id === parent.id)}}
     })
 })
 
