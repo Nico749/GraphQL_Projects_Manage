@@ -2,7 +2,7 @@ const {projects, clients} = require ('../dummydata.js')
 const Project = require('../models/Project')
 const Client = require('../models/Client')
 
-const {GraphQLObjectType, GraphQLID, GraphQLString, GraphQLSchema, GraphQLList} = require ('graphql')
+const {GraphQLObjectType, GraphQLID, GraphQLString, GraphQLSchema, GraphQLList, GraphQLNonNull, GraphQLEnumType} = require ('graphql')
 
 
 //client type
@@ -67,7 +67,113 @@ const RootQuery = new GraphQLObjectType({
     }
 })
 
+//MUTATIONS
+const mutation = new GraphQLObjectType({
+    name:"Mutation",
+    fields:{
+        //CLIENTS MUTATIONS
+        addClient:{
+            type:ClientType, //type of what we want to add
+            args:{
+                name:{type:GraphQLNonNull(GraphQLString)},//cannot be null
+                email:{type:GraphQLNonNull(GraphQLString)},//cannot be null
+                phone:{type:GraphQLNonNull(GraphQLString)},//cannot be null
+            },
+            resolve(parent,args){
+                const client = new Client({
+                    name:args.name,
+                    email:args.email,
+                    phone:args.phone
+
+                })
+                return client.save()
+            }
+        },
+        deleteClient:{
+            type:ClientType,
+            args:{
+                id:{type:GraphQLNonNull(GraphQLID)}
+            },
+            resolve(parent,args){
+                return Client.findByIdAndRemove(args.id)
+            }
+        },
+        //PROJECTS MUTATIONS
+        addProject:{
+            type:ProjectType, //type of what we want to add
+            args:{
+                name:{type:GraphQLNonNull(GraphQLString)},//cannot be null
+                description:{type:GraphQLNonNull(GraphQLString)},//cannot be null
+                clientId:{type:GraphQLNonNull(GraphQLID)},
+                status:{
+                    type: new GraphQLEnumType({
+                        name:"ProjectStatus",
+                        values:{
+                            'new':{value:"Not started"},
+                            'progress':{value:"In progress"},
+                            'completed':{value:"Completed"}
+                        }
+                    }),
+                    defaultValue:"Not started"
+                }
+            },
+            resolve(parent,args){
+                const project = new Project({
+                    name:args.name,
+                    description:args.description,
+                    status:args.status,
+                    clientId:args.clientId
+
+                })
+                return project.save()
+            }
+        },
+        deleteProject:{
+            type:ProjectType,
+            args:{
+                id:{type:GraphQLNonNull(GraphQLID)}
+            },
+            resolve(parent,args){
+                return Project.findByIdAndRemove(args.id)
+            }
+        },
+        updateProject:{
+            type:ProjectType,
+            args:{
+                id:{type:GraphQLNonNull(GraphQLID)},
+                name:{type:GraphQLString},
+                description:{type:GraphQLString},
+                status:{
+                    type: new GraphQLEnumType({
+                        name:"ProjectStatusUpdated",
+                        values:{
+                            'new':{value:"Not started"},
+                            'progress':{value:"In progress"},
+                            'completed':{value:"Completed"}
+                        }
+                    }),
+                }
+
+            },
+            resolve(parent,args){
+                return Project.findByIdAndUpdate(
+                    args.id,
+                    {
+                        $set:{
+                            name:args.name,
+                            description:args.description,
+                            status:args.status
+                        }
+                    },
+                    {new:true}
+                )
+            }
+        }
+    }
+})
+
 
 module.exports = new GraphQLSchema({
-    query:RootQuery
+    query:RootQuery,
+    mutation:mutation
 })

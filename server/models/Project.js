@@ -9,7 +9,7 @@ description:{
 },
 status:{
     type:String,
-    enum:['Not Started',"In progress","Completed"]
+    enum:['Not started',"In progress","Completed"]
 },
 clientId:{
     type:mongoose.Schema.Types.ObjectId,
