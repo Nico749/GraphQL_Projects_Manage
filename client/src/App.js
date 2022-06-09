@@ -7,6 +7,7 @@ import {
   Route,
 } from "react-router-dom";
 import Home from "./pages/Home";
+import Project from "./pages/Project";
 
 //setting new client with graphql uri
 const client = new ApolloClient({
@@ -23,6 +24,7 @@ function App() {
         <div className="container">
         <Routes>
           <Route path='/' element={<Home />} />
+          <Route path= '/projects/:id' element={<Project/>}/>
           <Route path='*' element={<NotFound />} />
         </Routes>
          
