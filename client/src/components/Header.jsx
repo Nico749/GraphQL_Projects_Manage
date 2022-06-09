@@ -2,11 +2,11 @@
 
 export default function Header() {
   return (
-    <nav className="navbar bg-light mb-4 p-0">
-        <div className="container"></div>
-        <a className="navbar-brand" href="/">
-            <div className="d-flex">
-                <div>Project Management</div>
+    <nav className="navbar bg-dark mb-4 p-25">
+        <div className="container "></div>
+        <a className="navbar-brand " href="/">
+            <div className=" d-flex " style={{color: 'blue'}}>
+                <div>Project Management Portal</div>
             </div>
         </a>
       
