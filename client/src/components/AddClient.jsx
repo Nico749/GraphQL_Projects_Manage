@@ -13,7 +13,15 @@ const AddClient = () => {
         variables:{name,email,phone},
         //to have the data updated without need to refresh the page we refetch the get_clients query
         refetchQueries:[{query:GET_CLIENTS}]
-            
+        //alternative way using cache
+        // update(cache, { data: { addClient } }) {
+        //     const { clients } = cache.readQuery({ query: GET_CLIENTS });
+      
+        //     cache.writeQuery({
+        //       query: GET_CLIENTS,
+        //       data: { clients: [...clients, addClient] },
+        //     });
+        //   },            
     })
 
     const onSubmit = (e) => {
